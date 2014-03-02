@@ -121,16 +121,14 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 		@Override
 		public Fragment getItem(int position) {
 			
-			Fragment fragment = null;
-			
 			switch(position) {
 				case DETECTOR_VIEW:
-					fragment = new DetectorFragment();
+					return new DetectorFragment();
 				case MAP_VIEW:
-					fragment = new MapFragment();
+					return new MapFragment();
 			}
 			
-			return fragment;
+			return null;
 		}
 
 		@Override
