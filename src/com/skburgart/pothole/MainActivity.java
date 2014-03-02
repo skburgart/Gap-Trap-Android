@@ -3,7 +3,13 @@ package com.skburgart.pothole;
 import java.util.Locale;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.FragmentTransaction;
+import android.content.Context;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -11,30 +17,28 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ToggleButton;
 import android.widget.TextView;
 
-public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
+public class MainActivity extends FragmentActivity implements ActionBar.TabListener, SensorEventListener {
 
-	/**
-	 * The {@link android.support.v4.view.PagerAdapter} that will provide
-	 * fragments for each of the sections. We use a
-	 * {@link android.support.v4.app.FragmentPagerAdapter} derivative, which
-	 * will keep every loaded fragment in memory. If this becomes too memory
-	 * intensive, it may be best to switch to a
-	 * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-	 */
-	SectionsPagerAdapter mSectionsPagerAdapter;
-
-	/**
-	 * The {@link ViewPager} that will host the section contents.
-	 */
-	ViewPager mViewPager;
+	// Log tag
+	private static final String TAG = "mainactivity";
+	
+	// Tab variables
+	private SectionsPagerAdapter mSectionsPagerAdapter;
+	private ViewPager mViewPager;
+	
+	// Sensor variables
+	private static SensorManager mSensorManager;
+	private static Sensor mAccelerometer;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -45,17 +49,14 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 		final ActionBar actionBar = getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
-		// Create the adapter that will return a fragment for each of the three
-		// primary sections of the app.
+		// Create the adapter that will return fragments
 		mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
 		// Set up the ViewPager with the sections adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
 
-		// When swiping between different sections, select the corresponding
-		// tab. We can also use ActionBar.Tab#select() to do this if we have
-		// a reference to the Tab.
+		// When swiping between different sections select the corresponding tab
 		mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
 					@Override
 					public void onPageSelected(int position) {
@@ -65,19 +66,18 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
 		// For each of the sections in the app, add a tab to the action bar.
 		for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
-			// Create a tab with text corresponding to the page title defined by
-			// the adapter. Also specify this Activity object, which implements
-			// the TabListener interface, as the callback (listener) for when
-			// this tab is selected.
 			actionBar.addTab(actionBar.newTab()
 					.setText(mSectionsPagerAdapter.getPageTitle(i))
 					.setTabListener(this));
 		}
+		
+		// Set up accelerometer
+	    mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+	    mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
@@ -85,8 +85,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 	@Override
 	public void onTabSelected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
-		// When the given tab is selected, switch to the corresponding page in
-		// the ViewPager.
 		mViewPager.setCurrentItem(tab.getPosition());
 	}
 
@@ -146,10 +144,43 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
 	public static class DetectorFragment extends Fragment{
 		
+	    private MainActivity mActivity;
+	    View rootView;
+	    ToggleButton button;
+
+	    @Override
+	    public void onAttach(Activity activity) {
+	        super.onAttach(activity);
+	        mActivity = (MainActivity) activity;
+	    }
+		
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_detector, container, false);
+			rootView = inflater.inflate(R.layout.fragment_detector, container, false);
+			button = (ToggleButton) rootView.findViewById(R.id.buttonDetector);
+	        button.setOnClickListener(new View.OnClickListener() {
+	        	public void onClick(View v) {
+	        		Log.i(TAG, "Clicked detector button");
+	        		
+	        		if (((ToggleButton) v).isChecked()) {
+		                mSensorManager.registerListener(mActivity, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+	        		} else {
+		         	    mSensorManager.unregisterListener(mActivity);
+	        		}
+	            }
+	        });
+			
 			return rootView;
+		}
+		
+		@Override
+		public void onPause() {
+			
+			super.onPause();
+			
+			Log.i(TAG, "Detector fragment paused");
+     	    mSensorManager.unregisterListener(mActivity);
+     	    button.setChecked(false);
 		}
 	}
 	
@@ -162,4 +193,18 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 		}
 	}
 
+	@Override
+	public void onAccuracyChanged(Sensor sensor, int accuracy) {
+		
+		Log.i(TAG, "Accuracy changed: " + accuracy);
+		
+	}
+
+	@Override
+	public void onSensorChanged(SensorEvent event) {
+
+		float values[] = event.values;
+		Log.i(TAG, String.format("Sensor changed: [%f, %f, %f]", values[0], values[1], values[2]));
+	}
 }
+
