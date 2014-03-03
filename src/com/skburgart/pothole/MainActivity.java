@@ -4,7 +4,6 @@ import java.util.Locale;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -20,7 +19,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ToggleButton;
 
-public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
+public class MainActivity extends FragmentActivity {
 
 	// Log tag
 	private static final String TAG = "MainActivity";
@@ -57,7 +56,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
 		// Create the adapter that will return fragments
-		mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+		mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), this);
 
 		// Set up the ViewPager with the sections adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
@@ -65,17 +64,17 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
 		// When swiping between different sections select the corresponding tab
 		mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-					@Override
-					public void onPageSelected(int position) {
-						actionBar.setSelectedNavigationItem(position);
-					}
-				});
+			@Override
+			public void onPageSelected(int position) {
+				actionBar.setSelectedNavigationItem(position);
+			}
+		});
 
 		// For each of the sections in the app, add a tab to the action bar.
 		for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
 			actionBar.addTab(actionBar.newTab()
-					.setText(mSectionsPagerAdapter.getPageTitle(i))
-					.setTabListener(this));
+					 .setText(mSectionsPagerAdapter.getPageTitle(i))
+					 .setTabListener(new SimpleTabListener(mViewPager)));
 		}
 		
 		acc = new AccelerometerManager(this);
@@ -86,66 +85,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
-	}
-
-	@Override
-	public void onTabSelected(ActionBar.Tab tab,
-			FragmentTransaction fragmentTransaction) {
-		mViewPager.setCurrentItem(tab.getPosition());
-	}
-
-	@Override
-	public void onTabUnselected(ActionBar.Tab tab,
-			FragmentTransaction fragmentTransaction) {
-	}
-
-	@Override
-	public void onTabReselected(ActionBar.Tab tab,
-			FragmentTransaction fragmentTransaction) {
-	}
-
-	/**
-	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-	 * one of the sections/tabs/pages.
-	 */
-	public class SectionsPagerAdapter extends FragmentPagerAdapter {
-
-		public final static int DETECTOR_VIEW = 0;
-		public final static int MAP_VIEW = 1;
-		
-		public SectionsPagerAdapter(FragmentManager fm) {
-			super(fm);
-		}
-		
-		@Override
-		public int getCount() { 
-			return 2;
-		}
-
-		@Override
-		public Fragment getItem(int position) {
-			
-			switch(position) {
-				case DETECTOR_VIEW:
-					return new DetectorFragment();
-				case MAP_VIEW:
-					return new MapFragment();
-			}
-			
-			return null;
-		}
-
-		@Override
-		public CharSequence getPageTitle(int position) {
-			Locale l = Locale.getDefault();
-			switch (position) {
-				case DETECTOR_VIEW:
-					return getString(R.string.title_detector_fragment).toUpperCase(l);
-				case MAP_VIEW:
-					return getString(R.string.title_map_fragment).toUpperCase(l);
-			}
-			return null;
-		}
 	}
 
 	public static class DetectorFragment extends Fragment{
