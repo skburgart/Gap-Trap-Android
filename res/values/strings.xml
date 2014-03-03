@@ -6,5 +6,10 @@
     <string name="title_detector_fragment">Detector</string>
     <string name="title_map_fragment">Viewer</string>
     <string name="detection_string">Detection</string>
+    
+    <string name="pothole_alert_title">Pothole Detected</string>
+    <string name="pothole_alert_message">Was that a pothole?</string>
+    <string name="pothole_alert_yes">Yes</string>
+    <string name="pothole_alert_no">No</string>
 
 </resources>

@@ -5,11 +5,13 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.location.Location;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings.Secure;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,21 +29,20 @@ public class DetectorFragment extends Fragment {
 
     // Log tag
     private static final String TAG = "DetectorFragment";
-
     private static final double TRIGGER_GFORCE = 3.25;
+    private static String ANDROID_ID; 
 
     // UI variables
     private static Context mContext;
     private static ToggleButton detectButton;
+    private static RealtimeGraph mGraph;
     private static boolean mTriggered = false;
 
     // Sensor variables
-    private static AccelerometerManager mAccelerometer;
     private static GPSManager mGPS;
+    private static Location mLocation;
+    private static AccelerometerManager mAccelerometer;
     private static double mGForce;
-
-    // Graph
-    private static RealtimeGraph mGraph;
 
     // Timer variables
     private final static int INTERVAL = 20; // milliseconds
@@ -113,7 +114,7 @@ public class DetectorFragment extends Fragment {
             Log.i(TAG, "Pothole detected");
             mTriggered = true;
             playNotification();
-            getDialog(mContext).show();
+            getDialog(mContext, mGForce).show();
         }
     }
     
@@ -123,17 +124,24 @@ public class DetectorFragment extends Fragment {
         r.play();
     }
     
-    private static Dialog getDialog(Context c) {
+    private static Dialog getDialog(Context c, final double gForce) {
         AlertDialog.Builder builder = new AlertDialog.Builder(c);
-        builder.setMessage("Was that a pothole?");
-        builder.setTitle("Pothole Detected");
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+        builder.setMessage(R.string.pothole_alert_message);
+        builder.setTitle(R.string.pothole_alert_title);
+        builder.setPositiveButton(R.string.pothole_alert_yes, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 Log.i(TAG, "Pothole confirmed");
+                mLocation = mGPS.getLocation();
+
+                if (mLocation == null) {
+                    Log.i(TAG, "Location not ready");
+                } else {
+                    Log.i(TAG, String.format("Example report [%s][%f][%f %f]", ANDROID_ID, gForce, mLocation.getLongitude(), mLocation.getLatitude()));
+                }
                 mTriggered = false;
             }
         });
-        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.pothole_alert_no, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 Log.i(TAG, "Pothole rejected");
                 mTriggered = false;
@@ -158,6 +166,7 @@ public class DetectorFragment extends Fragment {
         mAccelerometer = new AccelerometerManager(activity);
         mGraph = new RealtimeGraph(activity);
         mGPS = new GPSManager(activity);
+        ANDROID_ID = Secure.getString(activity.getContentResolver(), Secure.ANDROID_ID);
     }
 
     @Override
