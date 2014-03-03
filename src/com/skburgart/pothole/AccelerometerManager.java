@@ -18,6 +18,7 @@ public class AccelerometerManager implements SensorEventListener {
 	private static Sensor mAccelerometer;
 
 	public AccelerometerManager(Context c) {
+		
 		super();
 	    mSensorManager = (SensorManager) c.getSystemService(Context.SENSOR_SERVICE);
 	    mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -37,13 +38,13 @@ public class AccelerometerManager implements SensorEventListener {
 	
 	public void start() {
 		
-		Log.i(TAG, "Registering accelerometer");
+		Log.v(TAG, "Registering accelerometer");
 		mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
 	}
 	
 	public void stop() {
 
-		Log.i(TAG, "Unegistering accelerometer");
+		Log.v(TAG, "Unegistering accelerometer");
  	    mSensorManager.unregisterListener(this);
 	}
 	

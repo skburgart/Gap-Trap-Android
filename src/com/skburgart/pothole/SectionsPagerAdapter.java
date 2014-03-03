@@ -32,7 +32,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
 		switch (position) {
 			case DETECTOR_VIEW:
-				return new DetectorFragment().setParent(mParent);
+				return new DetectorFragment();
 			case MAP_VIEW:
 				return new MapFragment();
 		}

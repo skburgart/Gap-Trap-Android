@@ -1,6 +1,7 @@
 package com.skburgart.pothole;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GraphViewSeries;
@@ -8,6 +9,9 @@ import com.jjoe64.graphview.LineGraphView;
 import com.jjoe64.graphview.GraphView.GraphViewData;
 
 public class RealtimeGraph {
+
+	// Log tag
+	private static final String TAG = "RealtimeGraph";
 	
     private static GraphView graphView;
 	private static GraphViewSeries accelerometerSeries;
@@ -31,16 +35,20 @@ public class RealtimeGraph {
 	
 	public void update(double y) {
 
+		Log.v(TAG, "Updating graph");
 		accelerometerSeries.appendData(new GraphViewData(x++, y), false, 50);
 		graphView.redrawAll();
 	}
 	
 	public void reset() {
+		
+		Log.v(TAG, "Resetting graph");
  	    accelerometerSeries.resetData(new GraphViewData[] {});
  	    x = 0;
 	}
 	
 	public GraphView getView() {
+		
 		return graphView;
 	}
 }

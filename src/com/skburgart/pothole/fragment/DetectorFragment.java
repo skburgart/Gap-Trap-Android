@@ -12,7 +12,6 @@ import android.widget.LinearLayout;
 import android.widget.ToggleButton;
 
 import com.skburgart.pothole.AccelerometerManager;
-import com.skburgart.pothole.MainActivity;
 import com.skburgart.pothole.R;
 import com.skburgart.pothole.RealtimeGraph;
 
@@ -21,9 +20,8 @@ public class DetectorFragment extends Fragment{
 	// Log tag
 	private static final String TAG = "DetectorFragment";
 	
-	// Activity variables
-	private MainActivity mParent;
-    private ToggleButton button;
+	// UI variables
+    private ToggleButton detectButton;
 
 	// Sensor variables
 	private static AccelerometerManager mAccelerometer;
@@ -46,8 +44,8 @@ public class DetectorFragment extends Fragment{
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_detector, container, false);
-		button = (ToggleButton) rootView.findViewById(R.id.buttonDetector);
-        button.setOnClickListener(new View.OnClickListener() {
+		detectButton = (ToggleButton) rootView.findViewById(R.id.buttonDetector);
+		detectButton.setOnClickListener(new View.OnClickListener() {
         	public void onClick(View v) {
         		Log.i(TAG, "Clicked detector button");
         		
@@ -59,9 +57,6 @@ public class DetectorFragment extends Fragment{
             }
         });
         
-		mAccelerometer = new AccelerometerManager(mParent);
-		mGraph = new RealtimeGraph(mParent);
-        
         // Add real time graph
         LinearLayout layout = (LinearLayout) rootView.findViewById(R.id.gforceGraph);
         layout.addView(mGraph.getView());
@@ -70,14 +65,18 @@ public class DetectorFragment extends Fragment{
 	}
 	
 	private void stopDetection() {
- 	    button.setChecked(false);
+		
+		Log.v(TAG, "Stopping detection");
+		detectButton.setChecked(false);
  	    mAccelerometer.stop();
  	    mGraph.reset();
  	    mHandler.removeCallbacks(mGForceTask);
 	}
 	
 	private void startDetection() {
- 	    button.setChecked(true);
+		
+		Log.v(TAG, "Starting detection");
+		detectButton.setChecked(true);
  	    mAccelerometer.start();
  	    mGForceTask.run();
 	}
@@ -86,7 +85,6 @@ public class DetectorFragment extends Fragment{
 		
 		try {
 			mGForce = mAccelerometer.getGForce();
-			Log.i(TAG, String.format("G force detected: %f", mGForce));	
 		} catch (NullPointerException npe) {
 			return; // values not yet populated, 
 		}
@@ -94,16 +92,12 @@ public class DetectorFragment extends Fragment{
 		mGraph.update(mGForce);
 	}
 	
-	public DetectorFragment setParent(MainActivity parent) {
-		
-		mParent = parent;
-		return this;
-	}
-    
     @Override
     public void onAttach(Activity activity) {
     	
         super.onAttach(activity);
+		mAccelerometer = new AccelerometerManager(activity);
+		mGraph = new RealtimeGraph(activity);
     }
 
 	@Override
