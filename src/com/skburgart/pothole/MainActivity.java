@@ -200,7 +200,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 	        graphView.getGraphViewStyle().setNumVerticalLabels(5);
 	        graphView.getGraphViewStyle().setNumHorizontalLabels(1);
 	        graphView.getGraphViewStyle().setTextSize(SCALE * 16.0f);
-     	    graphView.setVisibility(View.INVISIBLE);
 	        layout.addView(graphView);
 
 			return rootView;
@@ -217,7 +216,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
      	    button.setChecked(false);
      	    mSensorManager.unregisterListener(mActivity);
      	    accelerometerSeries.resetData(new GraphViewData[] {});
-     	    graphView.setVisibility(View.INVISIBLE);
      	    mHandler.removeCallbacks(mGForceTask);
 		}
 		
@@ -225,7 +223,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 			x = 0;
      	    button.setChecked(true);
 			mSensorManager.registerListener(mActivity, mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
-     	    graphView.setVisibility(View.VISIBLE);
      	    mGForceTask.run();
 		}
 	}
