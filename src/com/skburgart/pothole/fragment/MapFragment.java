@@ -8,11 +8,12 @@ import android.view.ViewGroup;
 
 import com.skburgart.pothole.R;
 
-public class MapFragment extends Fragment{
+public class MapFragment extends Fragment {
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.fragment_map, container, false);
-		return rootView;
-	}
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        View rootView = inflater.inflate(R.layout.fragment_map, container, false);
+        return rootView;
+    }
 }

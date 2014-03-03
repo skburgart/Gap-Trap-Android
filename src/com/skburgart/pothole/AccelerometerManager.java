@@ -9,51 +9,51 @@ import android.util.Log;
 
 public class AccelerometerManager implements SensorEventListener {
 
-	// Log tag
-	private static final String TAG = "AccelerometerManager";
-	
-	// Sensor variables
-	private float[] accValues;
-	private static SensorManager mSensorManager;
-	private static Sensor mAccelerometer;
+    // Log tag
+    private static final String TAG = "AccelerometerManager";
 
-	public AccelerometerManager(Context c) {
-		
-		super();
-	    mSensorManager = (SensorManager) c.getSystemService(Context.SENSOR_SERVICE);
-	    mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-	}
+    // Sensor variables
+    private float[] accValues;
+    private static SensorManager mSensorManager;
+    private static Sensor mAccelerometer;
 
-	@Override
-	public void onAccuracyChanged(Sensor sensor, int accuracy) {
-		
-		// blank
-	}
+    public AccelerometerManager(Context c) {
 
-	@Override
-	public void onSensorChanged(SensorEvent event) {
+        super();
+        mSensorManager = (SensorManager) c.getSystemService(Context.SENSOR_SERVICE);
+        mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+    }
 
-		accValues = event.values;
-	}
-	
-	public void start() {
-		
-		Log.v(TAG, "Registering accelerometer");
-		mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
-	}
-	
-	public void stop() {
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
-		Log.v(TAG, "Unegistering accelerometer");
- 	    mSensorManager.unregisterListener(this);
-	}
-	
-	public double getGForce() {
-		
-		if (accValues == null) {
-			throw new NullPointerException();
-		}
-		
-		return Math.sqrt(accValues[0] * accValues[0] + accValues[1] * accValues[1] + accValues[2] * accValues[2]) / 9.81;
-	}
+        // blank
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+
+        accValues = event.values;
+    }
+
+    public void start() {
+
+        Log.v(TAG, "Registering accelerometer");
+        mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
+    }
+
+    public void stop() {
+
+        Log.v(TAG, "Unegistering accelerometer");
+        mSensorManager.unregisterListener(this);
+    }
+
+    public double getGForce() {
+
+        if (accValues == null) {
+            throw new NullPointerException();
+        }
+
+        return Math.sqrt(accValues[0] * accValues[0] + accValues[1] * accValues[1] + accValues[2] * accValues[2]) / 9.81;
+    }
 }

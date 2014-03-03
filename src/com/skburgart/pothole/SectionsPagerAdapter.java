@@ -11,46 +11,48 @@ import com.skburgart.pothole.fragment.MapFragment;
 
 public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-	public final static int DETECTOR_VIEW = 0;
-	public final static int MAP_VIEW = 1;
-	
-	private final MainActivity mParent;
+    public final static int DETECTOR_VIEW = 0;
+    public final static int MAP_VIEW = 1;
 
-	public SectionsPagerAdapter(FragmentManager fm, MainActivity parent) {
-		
-		super(fm);
-		mParent = parent;
-	}
+    private final MainActivity mParent;
 
-	@Override
-	public int getCount() {
-		return 2;
-	}
+    public SectionsPagerAdapter(FragmentManager fm, MainActivity parent) {
 
-	@Override
-	public Fragment getItem(int position) {
+        super(fm);
+        mParent = parent;
+    }
 
-		switch (position) {
-			case DETECTOR_VIEW:
-				return new DetectorFragment();
-			case MAP_VIEW:
-				return new MapFragment();
-		}
+    @Override
+    public int getCount() {
 
-		return null;
-	}
+        return 2;
+    }
 
-	@Override
-	public CharSequence getPageTitle(int position) {
-		Locale l = Locale.getDefault();
-		
-		switch (position) {
-			case DETECTOR_VIEW:
-				return mParent.getString(R.string.title_detector_fragment).toUpperCase(l);
-			case MAP_VIEW:
-				return mParent.getString(R.string.title_map_fragment).toUpperCase(l);
-		}
-		
-		return null;
-	}
+    @Override
+    public Fragment getItem(int position) {
+
+        switch (position) {
+            case DETECTOR_VIEW:
+                return new DetectorFragment();
+            case MAP_VIEW:
+                return new MapFragment();
+        }
+
+        return null;
+    }
+
+    @Override
+    public CharSequence getPageTitle(int position) {
+
+        Locale l = Locale.getDefault();
+
+        switch (position) {
+            case DETECTOR_VIEW:
+                return mParent.getString(R.string.title_detector_fragment).toUpperCase(l);
+            case MAP_VIEW:
+                return mParent.getString(R.string.title_map_fragment).toUpperCase(l);
+        }
+
+        return null;
+    }
 }
