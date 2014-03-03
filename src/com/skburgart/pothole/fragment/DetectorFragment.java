@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.ToggleButton;
 
 import com.skburgart.pothole.AccelerometerManager;
+import com.skburgart.pothole.GPSManager;
 import com.skburgart.pothole.R;
 import com.skburgart.pothole.RealtimeGraph;
 
@@ -36,6 +37,7 @@ public class DetectorFragment extends Fragment {
 
     // Sensor variables
     private static AccelerometerManager mAccelerometer;
+    private static GPSManager mGPS;
     private static double mGForce;
 
     // Graph
@@ -81,6 +83,7 @@ public class DetectorFragment extends Fragment {
         Log.v(TAG, "Stopping detection");
         detectButton.setChecked(false);
         mAccelerometer.stop();
+        mGPS.stop();
         mGraph.reset();
         mHandler.removeCallbacks(mGForceTask);
     }
@@ -90,6 +93,7 @@ public class DetectorFragment extends Fragment {
         Log.v(TAG, "Starting detection");
         detectButton.setChecked(true);
         mAccelerometer.start();
+        mGPS.start();
         mGForceTask.run();
         mTriggered = false;
     }
@@ -153,6 +157,7 @@ public class DetectorFragment extends Fragment {
         mContext = activity;
         mAccelerometer = new AccelerometerManager(activity);
         mGraph = new RealtimeGraph(activity);
+        mGPS = new GPSManager(activity);
     }
 
     @Override
