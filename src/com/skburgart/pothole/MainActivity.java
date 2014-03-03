@@ -30,19 +30,17 @@ import com.jjoe64.graphview.GraphView.GraphViewData;
 import com.jjoe64.graphview.GraphViewSeries;
 import com.jjoe64.graphview.LineGraphView;
 
-public class MainActivity extends FragmentActivity implements ActionBar.TabListener, SensorEventListener {
+public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
 
 	// Log tag
-	private static final String TAG = "mainactivity";
+	private static final String TAG = "MainActivity";
 	
 	// Tag variables
 	private SectionsPagerAdapter mSectionsPagerAdapter;
 	private ViewPager mViewPager;
 	
 	// Sensor variables
-	private static SensorManager mSensorManager;
-	private static Sensor mAccelerometer;
-	private static float accValues[];
+	private static AccelerometerManager acc;
 	private static double gForce;
 
 	// Graph variables
@@ -56,7 +54,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     private final static Runnable mGForceTask = new Runnable() {
         @Override 
         public void run() {
-        	calculateGForce();
+        	updateGForce();
         	mHandler.postDelayed(mGForceTask, INTERVAL);
         }
     };
@@ -92,9 +90,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 					.setTabListener(this));
 		}
 		
-		// Set up accelerometer
-	    mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-	    mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+		// Initialize accelerometer
+		acc = new AccelerometerManager(this);
 	}
 
 	@Override
@@ -214,7 +211,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 		
 		private void stopAccelerometer() {
      	    button.setChecked(false);
-     	    mSensorManager.unregisterListener(mActivity);
+     	    acc.start();
      	    accelerometerSeries.resetData(new GraphViewData[] {});
      	    mHandler.removeCallbacks(mGForceTask);
 		}
@@ -222,7 +219,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 		private void startAccelerometer() {
 			x = 0;
      	    button.setChecked(true);
-			mSensorManager.registerListener(mActivity, mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
+     	    acc.start();
      	    mGForceTask.run();
 		}
 	}
@@ -235,29 +232,18 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 			return rootView;
 		}
 	}
-
-	@Override
-	public void onAccuracyChanged(Sensor sensor, int accuracy) {
-		
-		Log.i(TAG, "Accuracy changed: " + accuracy);
-	}
-
-	@Override
-	public void onSensorChanged(SensorEvent event) {
-
-		accValues = event.values;
-	}
-
 	
-	public static void calculateGForce() {
-		if (accValues != null) {
-			gForce = Math.sqrt(accValues[0] * accValues[0] + accValues[1] * accValues[1] + accValues[2] * accValues[2]) / 9.81;
-			Log.i(TAG, String.format("G force detected: %f", gForce));
-			
-			// Update graph data
-			accelerometerSeries.appendData(new GraphViewData(x++, gForce), false, 50);
-			graphView.redrawAll();
+	public static void updateGForce() {
+		
+		try {
+			gForce = acc.getGForce();
+			Log.i(TAG, String.format("G force detected: %f", gForce));	
+		} catch (NullPointerException npe) {
+			return; // values not yet populated, 
 		}
+		
+		accelerometerSeries.appendData(new GraphViewData(x++, gForce), false, 50);
+		graphView.redrawAll();
 	}
 }
 
