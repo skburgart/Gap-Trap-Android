@@ -11,6 +11,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -48,6 +49,17 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     private static GraphView graphView;
 	private static GraphViewSeries accelerometerSeries;
 	private static int x;
+	
+	// Timer variables
+	private final static int INTERVAL = 20; // milliseconds
+	private final static Handler mHandler = new Handler();
+    private final static Runnable mGForceTask = new Runnable() {
+        @Override 
+        public void run() {
+        	calculateGForce();
+        	mHandler.postDelayed(mGForceTask, INTERVAL);
+        }
+    };
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -206,6 +218,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
      	    mSensorManager.unregisterListener(mActivity);
      	    accelerometerSeries.resetData(new GraphViewData[] {});
      	    graphView.setVisibility(View.INVISIBLE);
+     	    mHandler.removeCallbacks(mGForceTask);
 		}
 		
 		private void startAccelerometer() {
@@ -213,6 +226,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
      	    button.setChecked(true);
 			mSensorManager.registerListener(mActivity, mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
      	    graphView.setVisibility(View.VISIBLE);
+     	    mGForceTask.run();
 		}
 	}
 	
@@ -235,17 +249,18 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 	public void onSensorChanged(SensorEvent event) {
 
 		accValues = event.values;
-		gForce = Math.sqrt(accValues[0] * accValues[0] + accValues[1] * accValues[1] + accValues[2] * accValues[2]) / 9.81;
-		Log.i(TAG, String.format("G force detected: %f", gForce));
-		
-		// Update graph data
-		accelerometerSeries.appendData(new GraphViewData(x++, gForce), false, 50);
-		graphView.redrawAll();
 	}
+
 	
-	public void calculateGForce() {
-
-
+	public static void calculateGForce() {
+		if (accValues != null) {
+			gForce = Math.sqrt(accValues[0] * accValues[0] + accValues[1] * accValues[1] + accValues[2] * accValues[2]) / 9.81;
+			Log.i(TAG, String.format("G force detected: %f", gForce));
+			
+			// Update graph data
+			accelerometerSeries.appendData(new GraphViewData(x++, gForce), false, 50);
+			graphView.redrawAll();
+		}
 	}
 }
 
