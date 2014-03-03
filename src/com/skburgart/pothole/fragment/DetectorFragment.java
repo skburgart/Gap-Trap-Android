@@ -1,6 +1,13 @@
 package com.skburgart.pothole.fragment;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -20,8 +27,12 @@ public class DetectorFragment extends Fragment {
     // Log tag
     private static final String TAG = "DetectorFragment";
 
+    private static final double TRIGGER_GFORCE = 3.25;
+
     // UI variables
-    private ToggleButton detectButton;
+    private static Context mContext;
+    private static ToggleButton detectButton;
+    private static boolean mTriggered = false;
 
     // Sensor variables
     private static AccelerometerManager mAccelerometer;
@@ -80,6 +91,7 @@ public class DetectorFragment extends Fragment {
         detectButton.setChecked(true);
         mAccelerometer.start();
         mGForceTask.run();
+        mTriggered = false;
     }
 
     public static void updateGForce() {
@@ -91,12 +103,54 @@ public class DetectorFragment extends Fragment {
         }
 
         mGraph.update(mGForce);
+
+        if (mGForce >= TRIGGER_GFORCE && !mTriggered) {
+
+            Log.i(TAG, "Pothole detected");
+            mTriggered = true;
+            playNotification();
+            getDialog(mContext).show();
+        }
+    }
+    
+    private static void playNotification() {
+        Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        Ringtone r = RingtoneManager.getRingtone(mContext, notification);
+        r.play();
+    }
+    
+    private static Dialog getDialog(Context c) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(c);
+        builder.setMessage("Was that a pothole?");
+        builder.setTitle("Pothole Detected");
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                Log.i(TAG, "Pothole confirmed");
+                mTriggered = false;
+            }
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                Log.i(TAG, "Pothole rejected");
+                mTriggered = false;
+            }
+        });
+        builder.setOnCancelListener(new AlertDialog.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                Log.i(TAG, "Pothole dialog dismissed");
+                mTriggered = false;
+            }
+        });
+        AlertDialog dialog = builder.create();
+        return dialog;
     }
 
     @Override
     public void onAttach(Activity activity) {
 
         super.onAttach(activity);
+        mContext = activity;
         mAccelerometer = new AccelerometerManager(activity);
         mGraph = new RealtimeGraph(activity);
     }

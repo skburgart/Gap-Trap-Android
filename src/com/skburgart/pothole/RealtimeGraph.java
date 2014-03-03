@@ -35,7 +35,6 @@ public class RealtimeGraph {
 
     public void update(double y) {
 
-        Log.v(TAG, "Updating graph");
         accelerometerSeries.appendData(new GraphViewData(x++, y), false, 50);
         graphView.redrawAll();
     }
