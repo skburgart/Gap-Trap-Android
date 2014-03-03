@@ -15,31 +15,40 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ToggleButton;
-import android.widget.TextView;
+
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.GraphView.GraphViewData;
+import com.jjoe64.graphview.GraphViewSeries;
+import com.jjoe64.graphview.LineGraphView;
 
 public class MainActivity extends FragmentActivity implements ActionBar.TabListener, SensorEventListener {
 
 	// Log tag
 	private static final String TAG = "mainactivity";
 	
-	// Tab variables
+	// Tag variables
 	private SectionsPagerAdapter mSectionsPagerAdapter;
 	private ViewPager mViewPager;
 	
 	// Sensor variables
 	private static SensorManager mSensorManager;
 	private static Sensor mAccelerometer;
+	private static float accValues[];
+	private static double gForce;
 
+	// Graph variables
+    private static GraphView graphView;
+	private static GraphViewSeries accelerometerSeries;
+	private static int x;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -163,24 +172,47 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 	        		Log.i(TAG, "Clicked detector button");
 	        		
 	        		if (((ToggleButton) v).isChecked()) {
-		                mSensorManager.registerListener(mActivity, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+	        			startAccelerometer();
 	        		} else {
-		         	    mSensorManager.unregisterListener(mActivity);
+		         	    stopAccelerometer();
 	        		}
 	            }
 	        });
-			
+	        
+	        final float SCALE = getActivity().getResources().getDisplayMetrics().density;
+	        LinearLayout layout = (LinearLayout) rootView.findViewById(R.id.gforceGraph);
+	        accelerometerSeries = new GraphViewSeries(new GraphViewData[] {});
+	        graphView = new LineGraphView(getActivity(), "G-Force Monitor");
+	        graphView.addSeries(accelerometerSeries);
+	        graphView.setManualYAxisBounds(4, 0);
+	        graphView.getGraphViewStyle().setNumVerticalLabels(5);
+	        graphView.getGraphViewStyle().setNumHorizontalLabels(1);
+	        graphView.getGraphViewStyle().setTextSize(SCALE * 16.0f);
+     	    graphView.setVisibility(View.INVISIBLE);
+	        layout.addView(graphView);
+
 			return rootView;
 		}
-		
+
 		@Override
 		public void onPause() {
 			
 			super.onPause();
-			
-			Log.i(TAG, "Detector fragment paused");
-     	    mSensorManager.unregisterListener(mActivity);
+			stopAccelerometer();
+		}
+		
+		private void stopAccelerometer() {
      	    button.setChecked(false);
+     	    mSensorManager.unregisterListener(mActivity);
+     	    accelerometerSeries.resetData(new GraphViewData[] {});
+     	    graphView.setVisibility(View.INVISIBLE);
+		}
+		
+		private void startAccelerometer() {
+			x = 0;
+     	    button.setChecked(true);
+			mSensorManager.registerListener(mActivity, mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
+     	    graphView.setVisibility(View.VISIBLE);
 		}
 	}
 	
@@ -197,14 +229,23 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {
 		
 		Log.i(TAG, "Accuracy changed: " + accuracy);
-		
 	}
 
 	@Override
 	public void onSensorChanged(SensorEvent event) {
 
-		float values[] = event.values;
-		Log.i(TAG, String.format("Sensor changed: [%f, %f, %f]", values[0], values[1], values[2]));
+		accValues = event.values;
+		gForce = Math.sqrt(accValues[0] * accValues[0] + accValues[1] * accValues[1] + accValues[2] * accValues[2]) / 9.81;
+		Log.i(TAG, String.format("G force detected: %f", gForce));
+		
+		// Update graph data
+		accelerometerSeries.appendData(new GraphViewData(x++, gForce), false, 50);
+		graphView.redrawAll();
+	}
+	
+	public void calculateGForce() {
+
+
 	}
 }
 
