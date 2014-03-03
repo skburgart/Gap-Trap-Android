@@ -5,11 +5,6 @@ import java.util.Locale;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.FragmentTransaction;
-import android.content.Context;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -25,28 +20,21 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ToggleButton;
 
-import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.GraphView.GraphViewData;
-import com.jjoe64.graphview.GraphViewSeries;
-import com.jjoe64.graphview.LineGraphView;
-
 public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
 
 	// Log tag
 	private static final String TAG = "MainActivity";
 	
-	// Tag variables
+	// Tab variables
 	private SectionsPagerAdapter mSectionsPagerAdapter;
 	private ViewPager mViewPager;
 	
 	// Sensor variables
 	private static AccelerometerManager acc;
 	private static double gForce;
-
-	// Graph variables
-    private static GraphView graphView;
-	private static GraphViewSeries accelerometerSeries;
-	private static int x;
+	
+	// Graph
+	private static RealtimeGraph graph;
 	
 	// Timer variables
 	private final static int INTERVAL = 20; // milliseconds
@@ -90,8 +78,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 					.setTabListener(this));
 		}
 		
-		// Initialize accelerometer
 		acc = new AccelerometerManager(this);
+		graph = new RealtimeGraph(this);
 	}
 
 	@Override
@@ -162,14 +150,12 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
 	public static class DetectorFragment extends Fragment{
 		
-	    private MainActivity mActivity;
 	    View rootView;
 	    ToggleButton button;
 
 	    @Override
 	    public void onAttach(Activity activity) {
 	        super.onAttach(activity);
-	        mActivity = (MainActivity) activity;
 	    }
 		
 		@Override
@@ -181,23 +167,16 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 	        		Log.i(TAG, "Clicked detector button");
 	        		
 	        		if (((ToggleButton) v).isChecked()) {
-	        			startAccelerometer();
+	        			startDetection();
 	        		} else {
-		         	    stopAccelerometer();
+		         	    stopDetection();
 	        		}
 	            }
 	        });
 	        
-	        final float SCALE = getActivity().getResources().getDisplayMetrics().density;
+	        // Add real time graph
 	        LinearLayout layout = (LinearLayout) rootView.findViewById(R.id.gforceGraph);
-	        accelerometerSeries = new GraphViewSeries(new GraphViewData[] {});
-	        graphView = new LineGraphView(getActivity(), "G-Force Monitor");
-	        graphView.addSeries(accelerometerSeries);
-	        graphView.setManualYAxisBounds(4, 0);
-	        graphView.getGraphViewStyle().setNumVerticalLabels(5);
-	        graphView.getGraphViewStyle().setNumHorizontalLabels(1);
-	        graphView.getGraphViewStyle().setTextSize(SCALE * 16.0f);
-	        layout.addView(graphView);
+	        layout.addView(graph.getView());
 
 			return rootView;
 		}
@@ -206,18 +185,17 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 		public void onPause() {
 			
 			super.onPause();
-			stopAccelerometer();
+			stopDetection();
 		}
 		
-		private void stopAccelerometer() {
+		private void stopDetection() {
      	    button.setChecked(false);
-     	    acc.start();
-     	    accelerometerSeries.resetData(new GraphViewData[] {});
+     	    acc.stop();
+     	    graph.reset();
      	    mHandler.removeCallbacks(mGForceTask);
 		}
 		
-		private void startAccelerometer() {
-			x = 0;
+		private void startDetection() {
      	    button.setChecked(true);
      	    acc.start();
      	    mGForceTask.run();
@@ -242,8 +220,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 			return; // values not yet populated, 
 		}
 		
-		accelerometerSeries.appendData(new GraphViewData(x++, gForce), false, 50);
-		graphView.redrawAll();
+		graph.update(gForce);
 	}
 }
 
