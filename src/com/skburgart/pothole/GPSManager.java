@@ -17,7 +17,7 @@ public class GPSManager {
     
     public void start() {
         
-        mLocationMangaer.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3000, 10, mLocationListener);  
+        mLocationMangaer.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 3000, 10, mLocationListener);  
     }
     
     public void stop() {

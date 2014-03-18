@@ -24,6 +24,7 @@ import com.skburgart.pothole.AccelerometerManager;
 import com.skburgart.pothole.GPSManager;
 import com.skburgart.pothole.R;
 import com.skburgart.pothole.RealtimeGraph;
+import com.skburgart.pothole.net.HTTPReport;
 
 public class DetectorFragment extends Fragment {
 
@@ -136,7 +137,7 @@ public class DetectorFragment extends Fragment {
                 if (mLocation == null) {
                     Log.i(TAG, "Location not ready");
                 } else {
-                    Log.i(TAG, String.format("Example report [%s][%f][%f %f]", ANDROID_ID, gForce, mLocation.getLongitude(), mLocation.getLatitude()));
+                    HTTPReport.report(ANDROID_ID, mLocation.getLatitude(), mLocation.getLongitude(), gForce);
                 }
                 mTriggered = false;
             }
