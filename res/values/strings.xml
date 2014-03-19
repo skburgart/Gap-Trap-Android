@@ -12,7 +12,12 @@
     <string name="pothole_alert_yes">Yes</string>
     <string name="pothole_alert_no">No</string>
     
+    <string name="pothole_location_loading">acquiring location&#8230;</string>
+    <string name="pothole_location_not_ready">location not ready</string>
+
     
-    <string name="pothole_location_loading">Acquiring location...</string>
+    <string name="pothole_reporting">reporting&#8230;</string>
+    <string name="pothole_reporting_success">reported!</string>
+    <string name="pothole_reporting_server_error">reporting failed\nserver error</string>
 
 </resources>

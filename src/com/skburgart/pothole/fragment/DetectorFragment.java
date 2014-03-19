@@ -144,7 +144,7 @@ public class DetectorFragment extends Fragment {
 
                 if (mLocation == null) {
                     Log.i(TAG, "Location not ready");
-			    	Crouton.makeText((Activity) mContext, "Location not acquired", Style.INFO).show();
+			    	Crouton.makeText((Activity) mContext, R.string.pothole_location_not_ready, Style.ALERT).show();
                 } else {
                     HTTPReport.report(mContext, ANDROID_ID, mLocation.getLatitude(), mLocation.getLongitude(), gForce);
                 }
@@ -170,7 +170,7 @@ public class DetectorFragment extends Fragment {
     
     public void updateLocationText(Location l) {
     	
-    	mLocationText.setText(String.format("Location %.03f %.03f within %.02fm", l.getLatitude(), l.getLongitude(), l.getAccuracy()));
+    	mLocationText.setText(String.format("location %.03f %.03f within %.02fm", l.getLatitude(), l.getLongitude(), l.getAccuracy()));
     }
 
     @Override
