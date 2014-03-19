@@ -11,5 +11,8 @@
     <string name="pothole_alert_message">Was that a pothole?</string>
     <string name="pothole_alert_yes">Yes</string>
     <string name="pothole_alert_no">No</string>
+    
+    
+    <string name="pothole_location_loading">Acquiring location...</string>
 
 </resources>

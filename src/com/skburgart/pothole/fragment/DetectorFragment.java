@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.skburgart.pothole.AccelerometerManager;
@@ -25,6 +26,9 @@ import com.skburgart.pothole.GPSManager;
 import com.skburgart.pothole.R;
 import com.skburgart.pothole.RealtimeGraph;
 import com.skburgart.pothole.net.HTTPReport;
+
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 
 public class DetectorFragment extends Fragment {
 
@@ -34,6 +38,7 @@ public class DetectorFragment extends Fragment {
     private static String ANDROID_ID; 
 
     // UI variables
+    private static TextView mLocationText;
     private static Context mContext;
     private static ToggleButton detectButton;
     private static RealtimeGraph mGraph;
@@ -60,6 +65,7 @@ public class DetectorFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_detector, container, false);
+        mLocationText = (TextView) rootView.findViewById(R.id.locationText);
         detectButton = (ToggleButton) rootView.findViewById(R.id.buttonDetector);
         detectButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -87,6 +93,7 @@ public class DetectorFragment extends Fragment {
         mAccelerometer.stop();
         mGPS.stop();
         mGraph.reset();
+        mLocationText.setText("");
         mHandler.removeCallbacks(mGForceTask);
     }
 
@@ -97,6 +104,7 @@ public class DetectorFragment extends Fragment {
         mAccelerometer.start();
         mGPS.start();
         mGForceTask.run();
+        mLocationText.setText(R.string.pothole_location_loading);
         mTriggered = false;
     }
 
@@ -136,8 +144,9 @@ public class DetectorFragment extends Fragment {
 
                 if (mLocation == null) {
                     Log.i(TAG, "Location not ready");
+			    	Crouton.makeText((Activity) mContext, "Location not acquired", Style.INFO).show();
                 } else {
-                    HTTPReport.report(ANDROID_ID, mLocation.getLatitude(), mLocation.getLongitude(), gForce);
+                    HTTPReport.report(mContext, ANDROID_ID, mLocation.getLatitude(), mLocation.getLongitude(), gForce);
                 }
                 mTriggered = false;
             }
@@ -158,6 +167,11 @@ public class DetectorFragment extends Fragment {
         AlertDialog dialog = builder.create();
         return dialog;
     }
+    
+    public void updateLocationText(Location l) {
+    	
+    	mLocationText.setText(String.format("Location %.03f %.03f within %.02fm", l.getLatitude(), l.getLongitude(), l.getAccuracy()));
+    }
 
     @Override
     public void onAttach(Activity activity) {
@@ -166,10 +180,10 @@ public class DetectorFragment extends Fragment {
         mContext = activity;
         mAccelerometer = new AccelerometerManager(activity);
         mGraph = new RealtimeGraph(activity);
-        mGPS = new GPSManager(activity);
+        mGPS = new GPSManager(activity, this);
         ANDROID_ID = Secure.getString(activity.getContentResolver(), Secure.ANDROID_ID);
     }
-
+    
     @Override
     public void onPause() {
 
