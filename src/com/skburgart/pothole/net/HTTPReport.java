@@ -14,7 +14,7 @@ import android.util.Log;
 public class HTTPReport {
 
     private static final String TAG = "HTTPReport";
-	public static final String REPORT_URL = "http://10.0.0.103:8080/pothole/AddReport";
+	public static final String REPORT_URL = "http://192.252.222.195:8080/pothole/AddReport";
 	
 	public static void report(final Context context, String androidid, double latitude, double longitude, double gforce) {
 		
