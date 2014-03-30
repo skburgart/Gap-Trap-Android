@@ -3,9 +3,7 @@ package com.skburgart.pothole.fragment;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.provider.Settings.Secure;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,18 +11,14 @@ import android.view.ViewGroup;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
-import com.skburgart.pothole.AccelerometerManager;
-import com.skburgart.pothole.GPSManager;
 import com.skburgart.pothole.R;
-import com.skburgart.pothole.RealtimeGraph;
 import com.skburgart.pothole.net.GetReports;
-import com.skburgart.pothole.net.Report;
 import com.skburgart.pothole.net.NetConfig.Callback;
+import com.skburgart.pothole.net.Report;
 
 public class ViewFragment extends Fragment {
 
@@ -68,7 +62,7 @@ public class ViewFragment extends Fragment {
         Log.i(TAG, "Plotting [" + r.getLatitude() + ", " + r.getLongitude() + "]");
         
         LatLng pos = new LatLng(r.getLatitude(), r.getLongitude());
-        map.addMarker(new MarkerOptions().position(pos));
+        map.addMarker(new MarkerOptions().position(pos).title("pothole").snippet("gforce " + r.getGforce()));
     }
     
     @Override

@@ -2,7 +2,6 @@ package com.skburgart.pothole;
 
 import com.skburgart.pothole.fragment.DetectorFragment;
 
-import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;

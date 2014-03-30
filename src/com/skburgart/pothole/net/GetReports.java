@@ -6,7 +6,6 @@ import android.util.Log;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.skburgart.pothole.R;
 import com.skburgart.pothole.net.NetConfig.Callback;
 
 import de.keyboardsurfer.android.widget.crouton.Crouton;
