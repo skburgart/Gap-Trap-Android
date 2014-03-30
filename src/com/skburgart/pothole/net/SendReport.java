@@ -11,10 +11,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 
-public class HTTPReport {
+public class SendReport {
 
-    private static final String TAG = "HTTPReport";
-	public static final String REPORT_URL = "http://192.252.222.195:8080/pothole/AddReport";
+    private static final String TAG = "SendReport";
+    private static final String REPORT_URL = NetConfig.BASE_URL + "/AddReport";
 	
 	public static void report(final Context context, String androidid, double latitude, double longitude, double gforce) {
 		

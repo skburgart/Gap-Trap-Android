@@ -25,7 +25,7 @@ import com.skburgart.pothole.AccelerometerManager;
 import com.skburgart.pothole.GPSManager;
 import com.skburgart.pothole.R;
 import com.skburgart.pothole.RealtimeGraph;
-import com.skburgart.pothole.net.HTTPReport;
+import com.skburgart.pothole.net.SendReport;
 
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
@@ -146,7 +146,7 @@ public class DetectorFragment extends Fragment {
                     Log.i(TAG, "Location not ready");
 			    	Crouton.makeText((Activity) mContext, R.string.pothole_location_not_ready, Style.ALERT).show();
                 } else {
-                    HTTPReport.report(mContext, ANDROID_ID, mLocation.getLatitude(), mLocation.getLongitude(), gForce);
+                    SendReport.report(mContext, ANDROID_ID, mLocation.getLatitude(), mLocation.getLongitude(), gForce);
                 }
                 mTriggered = false;
             }
