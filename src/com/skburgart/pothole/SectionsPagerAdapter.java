@@ -7,7 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import com.skburgart.pothole.fragment.DetectorFragment;
-import com.skburgart.pothole.fragment.MapFragment;
+import com.skburgart.pothole.fragment.ViewFragment;
 
 public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
@@ -35,7 +35,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
             case DETECTOR_VIEW:
                 return new DetectorFragment();
             case MAP_VIEW:
-                return new MapFragment();
+                return new ViewFragment();
         }
 
         return null;
