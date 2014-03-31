@@ -1,4 +1,4 @@
-package com.skburgart.pothole.net;
+package com.skburgart.pothole.value;
 
 public class Report {
 

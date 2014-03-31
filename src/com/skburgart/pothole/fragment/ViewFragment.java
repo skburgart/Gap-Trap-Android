@@ -18,7 +18,8 @@ import com.google.gson.Gson;
 import com.skburgart.pothole.R;
 import com.skburgart.pothole.net.GetReports;
 import com.skburgart.pothole.net.NetConfig.Callback;
-import com.skburgart.pothole.net.Report;
+import com.skburgart.pothole.value.Markers;
+import com.skburgart.pothole.value.Report;
 
 public class ViewFragment extends Fragment {
 
@@ -28,6 +29,7 @@ public class ViewFragment extends Fragment {
     
     private Context mContext;
     private GoogleMap map;
+    private Markers mMarkers;
     
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -37,8 +39,7 @@ public class ViewFragment extends Fragment {
         map = ((SupportMapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
         map.setMyLocationEnabled(true);
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(DEFAULT_LOCATION, DEFAULT_ZOOM));
-        
-        GetReports.get(mContext, new GetReportsCallBack());
+        mMarkers = new Markers(map);
         
         return rootView;
     }
@@ -50,25 +51,28 @@ public class ViewFragment extends Fragment {
             
             Gson gson = new Gson();
             Report[] reports = gson.fromJson(response, Report[].class);
-
-            for (Report r : reports) {
-                plotReport(r);
-            }
+            mMarkers.add(reports);
         }
     }
     
-    private void plotReport(Report r) {
-
-        Log.i(TAG, "Plotting [" + r.getLatitude() + ", " + r.getLongitude() + "]");
+    @Override
+    public void onResume() {
+        super.onResume();
         
-        LatLng pos = new LatLng(r.getLatitude(), r.getLongitude());
-        map.addMarker(new MarkerOptions().position(pos).title("pothole").snippet("gforce " + r.getGforce()));
-    }
+        GetReports.get(mContext, new GetReportsCallBack());
+    };
+    
+    @Override
+    public void onPause() {
+        super.onPause();
+        
+        mMarkers.clear();
+    };
     
     @Override
     public void onAttach(Activity activity) {
-
         super.onAttach(activity);
+        
         mContext = activity;
     }
 }
