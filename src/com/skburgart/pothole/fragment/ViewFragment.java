@@ -25,54 +25,54 @@ public class ViewFragment extends Fragment {
     private static final String TAG = "ViewFragment";
     private static final LatLng DEFAULT_LOCATION = new LatLng(38.989, -76.942); // College Park
     private static final int DEFAULT_ZOOM = 10;
-    
+
     private Context mContext;
     private GoogleMap mMap;
     private Markers mMarkers;
-    
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_view, container, false);   
+        View rootView = inflater.inflate(R.layout.fragment_view, container, false);
         Log.d(TAG, "Infalting view fragment");
-        
+
         mMap = ((SupportMapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
         mMap.setMyLocationEnabled(true);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(DEFAULT_LOCATION, DEFAULT_ZOOM));
         mMarkers = new Markers(mMap);
-        
+
         return rootView;
     }
-    
+
     private class GetReportsCallBack implements Callback {
 
         @Override
         public void getReseponse(String response) {
-            
+
             Gson gson = new Gson();
             Report[] reports = gson.fromJson(response, Report[].class);
             mMarkers.add(reports);
         }
     }
-    
+
     @Override
     public void onResume() {
         super.onResume();
-        
+
         GetReports.get(mContext, new GetReportsCallBack());
     };
-    
+
     @Override
     public void onPause() {
         super.onPause();
-        
+
         mMarkers.clear();
     };
-    
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        
+
         mContext = activity;
     }
 }

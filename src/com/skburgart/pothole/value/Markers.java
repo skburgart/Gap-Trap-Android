@@ -14,11 +14,11 @@ public class Markers {
     private static final String TAG = "Markers";
     private static ArrayList<Marker> markers = new ArrayList<Marker>();
     private static GoogleMap map;
-    
+
     public Markers(GoogleMap m) {
         map = m;
     }
-    
+
     public void add(Report r) {
 
         Log.d(TAG, "Adding [" + r.getLatitude() + ", " + r.getLongitude() + "]");
@@ -26,7 +26,7 @@ public class Markers {
         Marker m = map.addMarker(new MarkerOptions().position(pos).title("pothole").snippet("gforce " + r.getGforce()));
         markers.add(m);
     }
-    
+
     public void add(Report[] reports) {
 
         for (Report r : reports) {
@@ -39,7 +39,7 @@ public class Markers {
         for (Marker m : markers) {
             m.remove();
         }
-        
+
         markers.clear();
     }
 }

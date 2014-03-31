@@ -38,13 +38,13 @@ public class AccelerometerManager implements SensorEventListener {
 
     public void start() {
 
-        Log.v(TAG, "Registering accelerometer");
+        Log.d(TAG, "Registering accelerometer");
         mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
     }
 
     public void stop() {
 
-        Log.v(TAG, "Unegistering accelerometer");
+        Log.d(TAG, "Unegistering accelerometer");
         mSensorManager.unregisterListener(this);
     }
 

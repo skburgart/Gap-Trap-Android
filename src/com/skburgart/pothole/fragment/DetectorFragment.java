@@ -35,7 +35,7 @@ public class DetectorFragment extends Fragment {
     // Log tag
     private static final String TAG = "DetectorFragment";
     private static final double TRIGGER_GFORCE = 3.25;
-    private static String ANDROID_ID; 
+    private static String ANDROID_ID;
 
     // UI variables
     private static TextView mLocationText;
@@ -69,8 +69,9 @@ public class DetectorFragment extends Fragment {
         mLocationText = (TextView) rootView.findViewById(R.id.locationText);
         detectButton = (ToggleButton) rootView.findViewById(R.id.buttonDetector);
         detectButton.setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View v) {
-                Log.i(TAG, "Clicked detector button");
+                Log.d(TAG, "Clicked detector button");
 
                 if (((ToggleButton) v).isChecked()) {
                     startDetection();
@@ -100,7 +101,7 @@ public class DetectorFragment extends Fragment {
 
     private void startDetection() {
 
-        Log.v(TAG, "Starting detection");
+        Log.d(TAG, "Starting detection");
         detectButton.setChecked(true);
         mAccelerometer.start();
         mGPS.start();
@@ -127,25 +128,26 @@ public class DetectorFragment extends Fragment {
             getDialog(mContext, mGForce).show();
         }
     }
-    
+
     private static void playNotification() {
         Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         Ringtone r = RingtoneManager.getRingtone(mContext, notification);
         r.play();
     }
-    
+
     private static Dialog getDialog(Context c, final double gForce) {
         AlertDialog.Builder builder = new AlertDialog.Builder(c);
         builder.setMessage(R.string.pothole_alert_message);
         builder.setTitle(R.string.pothole_alert_title);
         builder.setPositiveButton(R.string.pothole_alert_yes, new DialogInterface.OnClickListener() {
+            @Override
             public void onClick(DialogInterface dialog, int id) {
                 Log.i(TAG, "Pothole confirmed");
                 mLocation = mGPS.getLocation();
 
                 if (mLocation == null) {
-                    Log.i(TAG, "Location not ready");
-			    	Crouton.makeText((Activity) mContext, R.string.pothole_location_not_ready, Style.ALERT).show();
+                    Log.w(TAG, "Location not ready");
+                    Crouton.makeText((Activity) mContext, R.string.pothole_location_not_ready, Style.ALERT).show();
                 } else {
                     SendReport.report(mContext, ANDROID_ID, mLocation.getLatitude(), mLocation.getLongitude(), gForce);
                 }
@@ -153,6 +155,7 @@ public class DetectorFragment extends Fragment {
             }
         });
         builder.setNegativeButton(R.string.pothole_alert_no, new DialogInterface.OnClickListener() {
+            @Override
             public void onClick(DialogInterface dialog, int id) {
                 Log.i(TAG, "Pothole rejected");
                 mTriggered = false;
@@ -168,10 +171,10 @@ public class DetectorFragment extends Fragment {
         AlertDialog dialog = builder.create();
         return dialog;
     }
-    
+
     public void updateLocationText(Location l) {
-    	
-    	mLocationText.setText(String.format("location %.03f %.03f within %.02fm", l.getLatitude(), l.getLongitude(), l.getAccuracy()));
+
+        mLocationText.setText(String.format("location %.03f %.03f within %.02fm", l.getLatitude(), l.getLongitude(), l.getAccuracy()));
     }
 
     @Override
@@ -184,7 +187,7 @@ public class DetectorFragment extends Fragment {
         mGPS = new GPSManager(activity, this);
         ANDROID_ID = Secure.getString(activity.getContentResolver(), Secure.ANDROID_ID);
     }
-    
+
     @Override
     public void onPause() {
 

@@ -4,9 +4,9 @@ import android.content.Context;
 import android.util.Log;
 
 import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.GraphView.GraphViewData;
 import com.jjoe64.graphview.GraphViewSeries;
 import com.jjoe64.graphview.LineGraphView;
-import com.jjoe64.graphview.GraphView.GraphViewData;
 
 public class RealtimeGraph {
 
@@ -41,7 +41,7 @@ public class RealtimeGraph {
 
     public void reset() {
 
-        Log.v(TAG, "Resetting graph");
+        Log.d(TAG, "Resetting graph");
         accelerometerSeries.resetData(new GraphViewData[] {});
         x = 0;
     }

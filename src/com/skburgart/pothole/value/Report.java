@@ -8,7 +8,7 @@ public class Report {
     private double latitude;
     private double longitude;
     private String timestamp;
-    
+
     public int getRid() {
         return rid;
     }
