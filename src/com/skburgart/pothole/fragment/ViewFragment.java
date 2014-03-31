@@ -47,7 +47,7 @@ public class ViewFragment extends Fragment {
     private class GetReportsCallBack implements Callback {
 
         @Override
-        public void getReseponse(String response) {
+        public void processReseponse(String response) {
 
             Gson gson = new Gson();
             Report[] reports = gson.fromJson(response, Report[].class);

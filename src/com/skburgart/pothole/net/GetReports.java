@@ -26,7 +26,7 @@ public class GetReports {
             @Override
             public void onSuccess(String response) {
                 Log.i(TAG, String.format("Get reports success"));
-                c.getReseponse(response);
+                c.processReseponse(response);
             }
             @Override
             public void onFailure(Throwable error) {

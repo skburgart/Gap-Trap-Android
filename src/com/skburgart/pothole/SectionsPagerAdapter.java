@@ -11,8 +11,8 @@ import com.skburgart.pothole.fragment.ViewFragment;
 
 public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-    public final static int DETECTOR_VIEW = 0;
-    public final static int MAP_VIEW = 1;
+    public final static int DETECTOR_FRAGMENT = 0;
+    public final static int VIEW_FRAGMENT = 1;
 
     private final MainActivity mParent;
 
@@ -32,9 +32,9 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
 
         switch (position) {
-            case DETECTOR_VIEW:
+            case DETECTOR_FRAGMENT:
                 return new DetectorFragment();
-            case MAP_VIEW:
+            case VIEW_FRAGMENT:
                 return new ViewFragment();
         }
 
@@ -47,9 +47,9 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         Locale l = Locale.getDefault();
 
         switch (position) {
-            case DETECTOR_VIEW:
+            case DETECTOR_FRAGMENT:
                 return mParent.getString(R.string.title_detector_fragment).toUpperCase(l);
-            case MAP_VIEW:
+            case VIEW_FRAGMENT:
                 return mParent.getString(R.string.title_map_fragment).toUpperCase(l);
         }
 

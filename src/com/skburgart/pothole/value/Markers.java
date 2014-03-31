@@ -33,6 +33,7 @@ public class Markers {
             add(r);
         }
     }
+
     public void clear() {
 
         Log.i(TAG, "Clearing markers");

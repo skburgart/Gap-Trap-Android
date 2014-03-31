@@ -41,7 +41,7 @@ public class SendReport {
             }
             @Override
             public void onFailure(Throwable error) {
-                Log.i(TAG, String.format("Request Failed -> %s", error.getMessage()));
+                Log.e(TAG, String.format("Request Failed -> %s", error.getMessage()));
                 Crouton.makeText((Activity) context, String.format("reporting failed\n%s", error.getMessage()), Style.ALERT).show();
             }
         });
