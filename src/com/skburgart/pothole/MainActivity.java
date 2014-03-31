@@ -5,6 +5,7 @@ import android.app.ActionBar;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Menu;
 
 public class MainActivity extends FragmentActivity {
@@ -20,6 +21,8 @@ public class MainActivity extends FragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
+
+        Log.d(TAG, "Launching");
 		setContentView(R.layout.activity_main);
 
 		// Set up the action bar.

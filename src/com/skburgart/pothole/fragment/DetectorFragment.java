@@ -64,6 +64,7 @@ public class DetectorFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+        Log.d(TAG, "Infalting detector fragment");
         View rootView = inflater.inflate(R.layout.fragment_detector, container, false);
         mLocationText = (TextView) rootView.findViewById(R.id.locationText);
         detectButton = (ToggleButton) rootView.findViewById(R.id.buttonDetector);

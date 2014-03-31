@@ -21,7 +21,7 @@ public class Markers {
     
     public void add(Report r) {
 
-        Log.i(TAG, "Adding [" + r.getLatitude() + ", " + r.getLongitude() + "]");
+        Log.d(TAG, "Adding [" + r.getLatitude() + ", " + r.getLongitude() + "]");
         LatLng pos = new LatLng(r.getLatitude(), r.getLongitude());
         Marker m = map.addMarker(new MarkerOptions().position(pos).title("pothole").snippet("gforce " + r.getGforce()));
         markers.add(m);

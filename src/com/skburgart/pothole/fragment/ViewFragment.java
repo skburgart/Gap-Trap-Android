@@ -13,7 +13,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 import com.skburgart.pothole.R;
 import com.skburgart.pothole.net.GetReports;
@@ -28,18 +27,19 @@ public class ViewFragment extends Fragment {
     private static final int DEFAULT_ZOOM = 10;
     
     private Context mContext;
-    private GoogleMap map;
+    private GoogleMap mMap;
     private Markers mMarkers;
     
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_view, container, false);   
+        Log.d(TAG, "Infalting view fragment");
         
-        map = ((SupportMapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
-        map.setMyLocationEnabled(true);
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(DEFAULT_LOCATION, DEFAULT_ZOOM));
-        mMarkers = new Markers(map);
+        mMap = ((SupportMapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
+        mMap.setMyLocationEnabled(true);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(DEFAULT_LOCATION, DEFAULT_ZOOM));
+        mMarkers = new Markers(mMap);
         
         return rootView;
     }
