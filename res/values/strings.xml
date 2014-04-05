@@ -12,6 +12,12 @@
     <string name="about_message">This app was created by Steven Burgart as part of a semester project for CMSC724 Database Management Systems at the University of Maryland, College Park.</string>
     <string name="about_close">Close</string>
     <string name="about_website">Project Website</string>
+    <string name="about_website_url">http://skburgart.com/pothole/</string>
+
+    <string name="prefs_title">Configuration</string>
+    <string name="prefs_url_title">Server Address</string>
+    <string name="prefs_url_message">Central reporting server address</string>
+    <string name="prefs_url_default">http://skburgart.com/pothole</string>
 
     <string name="pothole_alert_title">Pothole Detected</string>
     <string name="pothole_alert_message">Was that a pothole?</string>

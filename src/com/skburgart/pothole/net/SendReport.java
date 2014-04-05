@@ -8,6 +8,7 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.skburgart.pothole.R;
+import com.skburgart.pothole.SettingsActivity;
 
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
@@ -15,20 +16,21 @@ import de.keyboardsurfer.android.widget.crouton.Style;
 public class SendReport {
 
     private static final String TAG = "SendReport";
-    private static final String REPORT_URL = NetConfig.BASE_URL + "/AddReport";
+    private static final String REPORT_URL = "/AddReport";
 
     public static void report(final Context context, String androidid, double latitude, double longitude, double gforce) {
 
         Log.i(TAG, String.format("Sending report -> [%s][%f][%f %f]", androidid, gforce, latitude, longitude));
         Crouton.makeText((Activity) context, R.string.pothole_reporting, Style.INFO).show();
 
+        String fullURL = SettingsActivity.getSetting(SettingsActivity.BASE_URL, context) + REPORT_URL;
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
         params.put("androidid", androidid);
         params.put("latitude", String.valueOf(latitude));
         params.put("longitude", String.valueOf(longitude));
         params.put("gforce", String.valueOf(gforce));
-        client.get(REPORT_URL, params, new AsyncHttpResponseHandler() {
+        client.get(fullURL, params, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(String response) {
                 if (response.equals("true")) {

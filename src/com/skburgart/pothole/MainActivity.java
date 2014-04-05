@@ -1,18 +1,21 @@
 package com.skburgart.pothole;
 
-import com.skburgart.pothole.net.NetConfig;
-
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.skburgart.pothole.net.NetConfig;
+
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 
 public class MainActivity extends FragmentActivity {
@@ -31,6 +34,9 @@ public class MainActivity extends FragmentActivity {
 
         Log.d(TAG, "Launching");
         setContentView(R.layout.activity_main);
+
+        // Set up preferences
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
         // Set up the action bar.
         final ActionBar actionBar = getActionBar();
@@ -70,7 +76,7 @@ public class MainActivity extends FragmentActivity {
                 showAbout();
                 return true;
             case R.id.action_settings:
-                Log.i(TAG, "Open Settings");
+                startActivity(new Intent(this, SettingsActivity.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -86,7 +92,7 @@ public class MainActivity extends FragmentActivity {
         about.setNegativeButton(R.string.about_website, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(NetConfig.BASE_URL));
+                i.setData(Uri.parse(getResources().getString(R.string.about_website_url)));
                 startActivity(i);
             }
         });
