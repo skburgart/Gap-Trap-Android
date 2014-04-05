@@ -5,7 +5,7 @@
     <string name="action_settings">Settings</string>
     <string name="action_about">About</string>
     <string name="title_detector_fragment">Detector</string>
-    <string name="title_map_fragment">Viewer</string>
+    <string name="title_map_fragment">Map</string>
     <string name="detection_string">Detection</string>
 
     <string name="about_title">About</string>
@@ -14,7 +14,7 @@
     <string name="about_website">Project Website</string>
     <string name="about_website_url">http://skburgart.com/pothole/</string>
 
-    <string name="prefs_title">Configuration</string>
+    <string name="prefs_title">Settings</string>
     <string name="prefs_url_title">Server Address</string>
     <string name="prefs_url_message">Central reporting server address</string>
     <string name="prefs_url_default">http://skburgart.com/pothole</string>
