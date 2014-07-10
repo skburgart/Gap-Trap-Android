@@ -1,0 +1,30 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.11.1'
+    }
+}
+
+apply plugin: 'android'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'com.google.android.gms:play-services:4.2.42'
+    compile 'com.google.code.gson:gson:2.2.4'
+    compile 'com.loopj.android:android-async-http:1.4.4'
+    compile 'de.keyboardsurfer.android.widget:crouton:1.8.4'
+    //compile files('libs/android-support-v4.jar')
+    compile files('libs/GraphView-3.1.1.jar')
+}
+
+android {
+    compileSdkVersion 19
+    buildToolsVersion "20.0.0"
+}
+
