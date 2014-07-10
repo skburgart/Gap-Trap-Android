@@ -4,7 +4,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.11.1'
+        classpath 'com.android.tools.build:gradle:0.12.0'
     }
 }
 
@@ -19,7 +19,6 @@ dependencies {
     compile 'com.google.code.gson:gson:2.2.4'
     compile 'com.loopj.android:android-async-http:1.4.4'
     compile 'de.keyboardsurfer.android.widget:crouton:1.8.4'
-    //compile files('libs/android-support-v4.jar')
     compile files('libs/GraphView-3.1.1.jar')
 }
 
