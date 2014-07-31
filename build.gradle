@@ -1,3 +1,5 @@
+apply plugin: 'com.android.application'
+
 buildscript {
     repositories {
         mavenCentral()
@@ -8,14 +10,12 @@ buildscript {
     }
 }
 
-apply plugin: 'android'
-
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    compile 'com.google.android.gms:play-services:4.2.42'
+    compile 'com.google.android.gms:play-services:5.0.77'
     compile 'com.google.code.gson:gson:2.2.4'
     compile 'com.loopj.android:android-async-http:1.4.4'
     compile 'de.keyboardsurfer.android.widget:crouton:1.8.4'
@@ -23,7 +23,30 @@ dependencies {
 }
 
 android {
-    compileSdkVersion 19
+    compileSdkVersion 20
     buildToolsVersion "20.0.0"
+
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+    signingConfigs {
+        release {
+            storeFile file(properties.getProperty("keystore.file"))
+            storePassword properties.getProperty("keystore.password")
+            keyAlias properties.getProperty("keystore.key.alias")
+            keyPassword properties.getProperty("keystore.key.password")
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+        }
+    }
 }
 
+
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+}

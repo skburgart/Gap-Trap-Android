@@ -6,7 +6,7 @@
 
     <uses-sdk
         android:minSdkVersion="14"
-        android:targetSdkVersion="19" />
+        android:targetSdkVersion="20" />
 
     <!-- Google Maps Android API permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -38,7 +38,8 @@
             android:label="@string/app_name" >
             <intent-filter android:label="@string/app_name_short" >
                 <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".SettingsActivity" />
